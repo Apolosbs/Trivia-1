@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia de Conocimientos Generales</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 50px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 0 10px gray; }
+        .question { font-size: 20px; margin-bottom: 15px; }
+        .options button { display: block; width: 100%; padding: 10px; margin: 5px 0; border: none; background: #3498db; color: white; cursor: pointer; border-radius: 5px; }
+        .options button:hover { background: #2980b9; }
+        .hidden { display: none; }
+        .result { font-size: 22px; font-weight: bold; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container animate__animated animate__fadeIn">
+        <h2>Trivia de Conocimientos Generales</h2>
+        <div id="quiz-container">
+            <p class="question" id="question-text"></p>
+            <div class="options" id="options-container"></div>
+        </div>
+        <button id="next-btn" class="hidden">Siguiente</button>
+        <div id="result" class="hidden result"></div>
+    </div>
+    <script>
+        const questions = [
+            { q: "¿Cuál es el río más largo del mundo?", options: ["Nilo", "Amazonas", "Yangtsé", "Misisipi"], answer: 1 },
+            { q: "¿Quién pintó La Mona Lisa?", options: ["Picasso", "Van Gogh", "Da Vinci", "Miguel Ángel"], answer: 2 },
+            { q: "¿Cuántos planetas tiene el Sistema Solar?", options: ["7", "8", "9", "10"], answer: 1 },
+            { q: "¿Cuál es el metal más caro del mundo?", options: ["Oro", "Rodio", "Plata", "Platino"], answer: 1 },
+            { q: "¿Cuál es el país más grande del mundo?", options: ["EE.UU.", "Canadá", "China", "Rusia"], answer: 3 },
+            { q: "¿Quién escribió Don Quijote de la Mancha?", options: ["Cervantes", "Shakespeare", "Lope de Vega", "Quevedo"], answer: 0 },
+            { q: "¿Cuál es el océano más grande?", options: ["Atlántico", "Índico", "Pacífico", "Ártico"], answer: 2 },
+            { q: "¿Qué gas respiramos principalmente?", options: ["Oxígeno", "Nitrógeno", "CO2", "Hidrógeno"], answer: 1 },
+            { q: "¿Cuál es la capital de Australia?", options: ["Sídney", "Melbourne", "Canberra", "Brisbane"], answer: 2 },
+            { q: "¿En qué año llegó el hombre a la Luna?", options: ["1965", "1969", "1971", "1959"], answer: 1 }
+        ];
+        
+        let currentQuestion = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            document.getElementById("question-text").textContent = questions[currentQuestion].q;
+            const optionsContainer = document.getElementById("options-container");
+            optionsContainer.innerHTML = "";
+            questions[currentQuestion].options.forEach((option, index) => {
+                const button = document.createElement("button");
+                button.textContent = option;
+                button.onclick = () => checkAnswer(index);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selected) {
+            const correct = questions[currentQuestion].answer;
+            if (selected === correct) {
+                score++;
+            }
+            currentQuestion++;
+            document.getElementById("next-btn").classList.remove("hidden");
+            document.getElementById("options-container").classList.add("hidden");
+        }
+
+        document.getElementById("next-btn").addEventListener("click", () => {
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+                document.getElementById("options-container").classList.remove("hidden");
+                document.getElementById("next-btn").classList.add("hidden");
+            } else {
+                showResults();
+            }
+        });
+
+        function showResults() {
+            document.getElementById("quiz-container").classList.add("hidden");
+            document.getElementById("next-btn").classList.add("hidden");
+            const resultText = document.getElementById("result");
+            let message;
+            if (score === 10) {
+                message = "¡Perfecto! 10/10 ¡Eres un genio!";
+            } else if (score >= 7) {
+                message = `¡Muy bien! ${score}/10 ¡Buen trabajo!`;
+            } else if (score >= 5) {
+                message = `¡Bien! ${score}/10 Puedes mejorar.`;
+            } else {
+                message = `Obtuviste ${score}/10. ¡Sigue aprendiendo!`;
+            }
+            resultText.textContent = message;
+            resultText.classList.remove("hidden");
+        }
+        
+        loadQuestion();
+    </script>
+</body>
+</html>
